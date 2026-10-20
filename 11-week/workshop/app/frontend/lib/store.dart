@@ -22,6 +22,12 @@ class ShopStore extends ChangeNotifier {
   bool loading = true;
   String? error;
   String? storageWarning;
+  bool ordersLoading = true;
+  String? ordersError;
+  bool simulateOrderFailure = const bool.fromEnvironment('ICA_ORDERS_FAILURE');
+  Duration orderLoadDelay = const Duration(
+    milliseconds: int.fromEnvironment('ICA_ORDERS_DELAY_MS'),
+  );
   SharedPreferences? _prefs;
   int get total => cart.fold(0, (sum, line) => sum + line.total);
   int get count => cart.fold(0, (sum, line) => sum + line.quantity);
@@ -29,17 +35,36 @@ class ShopStore extends ChangeNotifier {
   Future<void> init() async {
     try {
       _prefs = await SharedPreferences.getInstance();
-      final saved = _prefs!.getString('ica_${demo ? 'demo' : apiUrl}_orders');
-      if (saved != null) {
-        orders = List<Map<String, dynamic>>.from(jsonDecode(saved) as List);
-      }
       favorites = (_prefs!.getStringList('ica_favorites') ?? [])
           .map(int.parse)
           .toSet();
     } catch (_) {
       storageWarning = 'No se pudo recuperar el historial local.';
     }
+    await loadOrders();
     await loadProducts();
+  }
+
+  Future<void> loadOrders({bool? simulateFailure, Duration? delay}) async {
+    ordersLoading = true;
+    ordersError = null;
+    notifyListeners();
+    try {
+      final wait = delay ?? orderLoadDelay;
+      if (wait > Duration.zero) await Future<void>.delayed(wait);
+      if (simulateFailure ?? simulateOrderFailure) {
+        throw const FormatException('Falla de prueba del historial');
+      }
+      _prefs ??= await SharedPreferences.getInstance();
+      final saved = _prefs!.getString('ica_${demo ? 'demo' : apiUrl}_orders');
+      orders = saved == null
+          ? []
+          : List<Map<String, dynamic>>.from(jsonDecode(saved) as List);
+    } catch (_) {
+      ordersError = 'No pudimos cargar tus pedidos. Intenta de nuevo.';
+    }
+    ordersLoading = false;
+    notifyListeners();
   }
 
   Future<void> loadProducts() async {
@@ -75,7 +100,8 @@ class ShopStore extends ChangeNotifier {
         }
       }
     } catch (_) {
-      error = 'No pudimos cargar el catálogo. Comprueba la conexión con el servidor.';
+      error =
+          'No pudimos cargar el catálogo. Comprueba la conexión con el servidor.';
     }
     loading = false;
     notifyListeners();
@@ -182,7 +208,8 @@ class ShopStore extends ChangeNotifier {
         jsonEncode(orders),
       );
     } catch (_) {
-      storageWarning = 'Pedido confirmado, pero no se pudo guardar el historial en este dispositivo.';
+      storageWarning =
+          'Pedido confirmado, pero no se pudo guardar el historial en este dispositivo.';
     }
     notifyListeners();
   }

@@ -31,7 +31,8 @@ El trabajo individual se enfocará en las pantallas de perfil de usuario, regist
 ## Estado de entrega
 
 - CP0: línea base copiada y commit `chore(w11): import baseline of team app` publicado en el fork.
-- Verificación local pendiente: el SDK disponible trae Dart 3.10.0 y la app requiere Dart 3.13.2; `flutter pub get --offline` no puede resolver el proyecto con esa versión.
-- CP1: auditoría y mapa preparados; faltan las dos capturas reales `before-` por la limitación del SDK local.
-- CP2: patrón de pestañas y pila documentado, y tokens de tema implementados. `dart format` se ejecutó; `flutter analyze` y la ejecución siguen pendientes porque el SDK local no satisface el `pubspec.lock` (Dart >=3.13.2 y Flutter >=3.44.0).
+- SDK local del taller: Flutter 3.47.2 / Dart 3.13.2, instalado en `.tools/flutter`.
+- CP1: auditoría y mapa preparados; faltan las dos capturas reales `before-` porque no hay navegador conectado a esta sesión.
+- CP2: patrón de pestañas y pila documentado, y tokens de tema implementados. `dart format` se ejecutó.
+- CP3 local: estados de carga, error y lista vacía implementados para `Mis pedidos`; el servidor web local arrancó y `flutter test --no-pub test/orders_test.dart` pasó. Falta capturar pantallas reales, publicar el checkpoint y añadir el refresco en el segundo push.
 - La reflexión es personal: el estudiante debe escribirla en Google Docs y completar el enlace anterior.

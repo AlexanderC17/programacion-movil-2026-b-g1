@@ -574,55 +574,123 @@ class _ShopHomeState extends State<ShopHome> {
     );
   }
 
-  Widget history() => store.orders.isEmpty
-      ? empty(
-          Icons.receipt_long_outlined,
-          'Aquí verás tus pedidos',
-          action: const Text('Haz tu primer pedido desde el catálogo.'),
-        )
-      : ListView(
+  Widget history() {
+    if (store.ordersLoading) {
+      return Semantics(
+        label: 'Cargando pedidos',
+        child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            const Text(
-              'Mis pedidos',
-              style: TextStyle(fontSize: 27, fontWeight: FontWeight.w800),
-            ),
-            const Text('Historial guardado en este dispositivo'),
-            const SizedBox(height: 16),
-            ...store.orders.map(
-              (order) => Card(
-                child: ExpansionTile(
-                  title: Text(
-                    money((order['total'] as num).round()),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+            for (var i = 0; i < 3; i++)
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(height: 18, width: 150, color: Colors.black12),
+                      const SizedBox(height: 12),
+                      Container(height: 14, width: 220, color: Colors.black12),
+                    ],
                   ),
-                  subtitle: Text(
-                    '${order['status']} · ${DateTime.tryParse('${order['createdAt']}')?.toLocal().toString().substring(0, 16) ?? ''}',
-                  ),
-                  childrenPadding: const EdgeInsets.all(16),
-                  expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Referencia: ${order['id']}'),
-                    const SizedBox(height: 8),
-                    Text('Recoge: ${order['customer']}'),
-                    ...(order['items'] as List).map(
-                      (item) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 6),
-                        child: Text(
-                          '${item['quantity']} × ${item['name']}\n${item['size']} · ${item['topping']}',
-                        ),
-                      ),
-                    ),
-                    if ('${order['note'] ?? ''}'.isNotEmpty)
-                      Text('Nota: ${order['note']}'),
-                    if (store.demo)
-                      const Text('Pedido simulado · no requiere recogida'),
-                  ],
                 ),
               ),
-            ),
           ],
-        );
+        ),
+      );
+    }
+    if (store.ordersError != null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.cloud_off, color: Theme.of(context).colorScheme.error),
+              const SizedBox(height: 12),
+              Text(store.ordersError!, textAlign: TextAlign.center),
+              const SizedBox(height: 12),
+              FilledButton(
+                onPressed: store.loadOrders,
+                child: const Text('Reintentar'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    if (store.orders.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.receipt_long_outlined, size: 56),
+              const SizedBox(height: 16),
+              const Text(
+                'Aún no tienes pedidos',
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Tus compras aparecerán aquí cuando confirmes un pedido.',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () => setState(() => page = 0),
+                child: const Text('Explorar helados'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        const Text(
+          'Mis pedidos',
+          style: TextStyle(fontSize: 27, fontWeight: FontWeight.w800),
+        ),
+        const Text('Historial guardado en este dispositivo'),
+        const SizedBox(height: 16),
+        ...store.orders.map(
+          (order) => Card(
+            child: ExpansionTile(
+              title: Text(
+                money((order['total'] as num).round()),
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                '${order['status']} · ${DateTime.tryParse('${order['createdAt']}')?.toLocal().toString().substring(0, 16) ?? ''}',
+              ),
+              childrenPadding: const EdgeInsets.all(16),
+              expandedCrossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Referencia: ${order['id']}'),
+                const SizedBox(height: 8),
+                Text('Recoge: ${order['customer']}'),
+                ...(order['items'] as List).map(
+                  (item) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Text(
+                      '${item['quantity']} × ${item['name']}\n${item['size']} · ${item['topping']}',
+                    ),
+                  ),
+                ),
+                if ('${order['note'] ?? ''}'.isNotEmpty)
+                  Text('Nota: ${order['note']}'),
+                if (store.demo)
+                  const Text('Pedido simulado · no requiere recogida'),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   Widget empty(IconData icon, String title, {Widget? action}) => Center(
     child: SingleChildScrollView(
