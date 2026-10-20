@@ -574,12 +574,16 @@ class _ShopHomeState extends State<ShopHome> {
     );
   }
 
-  Widget history() {
+  Widget history() =>
+      RefreshIndicator(onRefresh: store.loadOrders, child: historyContent());
+
+  Widget historyContent() {
     if (store.ordersLoading) {
       return Semantics(
         label: 'Cargando pedidos',
         child: ListView(
           padding: const EdgeInsets.all(20),
+          physics: const AlwaysScrollableScrollPhysics(),
           children: [
             for (var i = 0; i < 3; i++)
               Card(
@@ -600,55 +604,84 @@ class _ShopHomeState extends State<ShopHome> {
       );
     }
     if (store.ordersError != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.cloud_off, color: Theme.of(context).colorScheme.error),
-              const SizedBox(height: 12),
-              Text(store.ordersError!, textAlign: TextAlign.center),
-              const SizedBox(height: 12),
-              FilledButton(
-                onPressed: store.loadOrders,
-                child: const Text('Reintentar'),
+      return ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: [
+          SizedBox(
+            height: MediaQuery.sizeOf(context).height * 0.6,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.cloud_off,
+                      color: Theme.of(context).colorScheme.error,
+                    ),
+                    const SizedBox(height: 12),
+                    Semantics(
+                      liveRegion: true,
+                      child: Text(
+                        store.ordersError!,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    FilledButton(
+                      onPressed: store.loadOrders,
+                      child: const Text('Reintentar'),
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       );
     }
     if (store.orders.isEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.receipt_long_outlined, size: 56),
-              const SizedBox(height: 16),
-              const Text(
-                'Aún no tienes pedidos',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+      return ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: [
+          SizedBox(
+            height: MediaQuery.sizeOf(context).height * 0.6,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.receipt_long_outlined, size: 56),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Aún no tienes pedidos',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Tus compras aparecerán aquí cuando confirmes un pedido.',
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      onPressed: () => setState(() => page = 0),
+                      child: const Text('Explorar helados'),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 8),
-              const Text(
-                'Tus compras aparecerán aquí cuando confirmes un pedido.',
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: () => setState(() => page = 0),
-                child: const Text('Explorar helados'),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       );
     }
     return ListView(
       padding: const EdgeInsets.all(20),
+      physics: const AlwaysScrollableScrollPhysics(),
       children: [
         const Text(
           'Mis pedidos',
@@ -745,9 +778,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       if (mounted) {
         setState(() {
           sending = false;
-          error = failure is OrderFailure
-              ? failure.message
-              : 'No pudimos confirmar el pedido. Revisa tu conexión y reintenta; el carrito se conserva.';
+          error = failure is OrderFailure ? failure.message : 'No pudimos confirmar el pedido. Revisa tu conexión y reintenta; el carrito se conserva.';
         });
       }
     }

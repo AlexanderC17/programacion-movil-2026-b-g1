@@ -34,5 +34,6 @@ El trabajo individual se enfocará en las pantallas de perfil de usuario, regist
 - SDK local del taller: Flutter 3.47.2 / Dart 3.13.2, instalado en `.tools/flutter`.
 - CP1: auditoría y mapa preparados; faltan las dos capturas reales `before-` porque no hay navegador conectado a esta sesión.
 - CP2: patrón de pestañas y pila documentado, y tokens de tema implementados. `dart format` se ejecutó.
-- CP3 local: estados de carga, error y lista vacía implementados para `Mis pedidos`; el servidor web local arrancó y `flutter test --no-pub test/orders_test.dart` pasó. Falta capturar pantallas reales, publicar el checkpoint y añadir el refresco en el segundo push.
+- CP3a publicado (`d54e70a`): estados de carga, error y lista vacía implementados para `Mis pedidos`.
+- CP3b: refresco por gesto y prueba automatizada implementados; `flutter test --no-pub test/orders_test.dart` y `flutter analyze --no-pub` pasan. Faltan las capturas reales.
 - La reflexión es personal: el estudiante debe escribirla en Google Docs y completar el enlace anterior.
