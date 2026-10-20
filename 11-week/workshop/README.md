@@ -23,7 +23,7 @@ El trabajo individual se enfocará en las pantallas de perfil de usuario, regist
 - TEAM: ICA / Ice Cream App
 - DOCS_REPO: https://github.com/code-corhuila/ica-docs
 - CODE_REPO: https://github.com/pablo12968/ica.app
-- BASELINE: `1d6929b` - copia de referencia sin cambios del código ICA local
+- BASELINE: commit del taller `1d6929b`; código fuente ICA `6d7882d`
 - REFLECTION_DOC: PENDIENTE - crear y compartir como Editor con el docente
 - MY_SCREENS: Mis pedidos, perfil de usuario, registro de usuario y detalle de compra
 <!-- CONFIG-END -->
