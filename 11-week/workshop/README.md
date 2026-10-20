@@ -32,4 +32,5 @@ El trabajo individual se enfocará en las pantallas de perfil de usuario, regist
 
 - CP0: línea base copiada y commit `chore(w11): import baseline of team app` publicado en el fork.
 - Verificación local pendiente: el SDK disponible trae Dart 3.10.0 y la app requiere Dart 3.13.2; `flutter pub get --offline` no puede resolver el proyecto con esa versión.
+- CP1: auditoría y mapa preparados; faltan las dos capturas reales `before-` por la limitación del SDK local.
 - La reflexión es personal: el estudiante debe escribirla en Google Docs y completar el enlace anterior.
