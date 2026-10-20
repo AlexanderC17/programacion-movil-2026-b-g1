@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'design_tokens.dart';
 import 'models.dart';
 import 'store.dart';
 
@@ -33,27 +34,38 @@ class _IceCreamAppState extends State<IceCreamApp> {
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
       useMaterial3: true,
-      scaffoldBackgroundColor: const Color(0xfffffaf4),
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xffab3e58),
-        surface: const Color(0xfffffaf4),
-      ),
+      scaffoldBackgroundColor: DesignTokens.background,
+      colorScheme:
+          ColorScheme.fromSeed(
+            seedColor: DesignTokens.primary,
+            surface: DesignTokens.background,
+          ).copyWith(
+            primary: DesignTokens.primary,
+            onPrimary: DesignTokens.surface,
+            secondary: DesignTokens.secondary,
+            onSecondary: DesignTokens.surface,
+            error: DesignTokens.error,
+            onError: DesignTokens.surface,
+            onSurface: DesignTokens.text,
+          ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: Color(0xfffffaf4),
+        backgroundColor: DesignTokens.background,
         centerTitle: false,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: DesignTokens.surface,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(DesignTokens.radiusInput),
           borderSide: BorderSide.none,
         ),
       ),
       cardTheme: CardThemeData(
         elevation: 0,
-        color: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        color: DesignTokens.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(DesignTokens.radiusCard),
+        ),
       ),
     ),
     home: ShopHome(store: store),
@@ -123,7 +135,7 @@ class _ShopHomeState extends State<ShopHome> {
                       horizontal: 20,
                       vertical: 8,
                     ),
-                    color: const Color(0xfff7e9cd),
+                    color: DesignTokens.warningSurface,
                     child: const Text(
                       'DEMO · Explora y prueba pedidos sin cobros',
                       style: TextStyle(fontSize: 12),
@@ -205,7 +217,7 @@ class _ShopHomeState extends State<ShopHome> {
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: const Color(0xfff7dce2),
+              color: DesignTokens.primarySoft,
               borderRadius: BorderRadius.circular(28),
             ),
             child: const Column(
@@ -478,7 +490,7 @@ class _ShopHomeState extends State<ShopHome> {
       );
     }
     return ListView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(DesignTokens.spaceLg),
       children: [
         const Text(
           'Tu bolsa de felicidad',
@@ -665,7 +677,9 @@ class _CheckoutPageState extends State<CheckoutPage> {
       if (mounted) {
         setState(() {
           sending = false;
-          error = failure is OrderFailure ? failure.message : 'No pudimos confirmar el pedido. Revisa tu conexión y reintenta; el carrito se conserva.';
+          error = failure is OrderFailure
+              ? failure.message
+              : 'No pudimos confirmar el pedido. Revisa tu conexión y reintenta; el carrito se conserva.';
         });
       }
     }
